@@ -1,0 +1,120 @@
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 17, 24, 39;
+  --background-rgb: 249, 250, 251;
+}
+
+.dark {
+  --foreground-rgb: 249, 250, 251;
+  --background-rgb: 17, 24, 39;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-600 text-white font-medium rounded-lg 
+           hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed 
+           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg 
+           hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed 
+           transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg 
+           focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
+           transition-colors placeholder:text-gray-400;
+  }
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6;
+  }
+  .section-title {
+    @apply text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.react-flow__edge-path {
+  stroke-dasharray: 8 4;
+  animation: dash-flow 1s linear infinite;
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+.react-flow__node {
+  transition: box-shadow 0.2s ease;
+}
+
+.react-flow__node:hover {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+.react-flow__handle {
+  transition: background-color 0.15s ease;
+}
+
+.react-flow__handle:hover {
+  background-color: #3b82f6;
+}
+
+.react-flow__controls {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.react-flow__minimap {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+}
+
+.deckgl-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deckgl-overlay canvas {
+  pointer-events: auto;
+}
+
+.maplibregl-map {
+  font-family: inherit;
+}
+
+.maplibregl-ctrl-group {
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid #e5e7eb;
+}

@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-09-04T19:18:26",
+  "elapsed_seconds": 0.03,
+  "total": 8,
+  "passed": 6,
+  "failed": 2,
+  "mode": "all",
+  "results": [
+    {
+      "name": "frontend:package_json",
+      "passed": true,
+      "detail": "next=^16.3.4",
+      "elapsed_ms": 0.37939999310765415
+    },
+    {
+      "name": "frontend:component_files",
+      "passed": true,
+      "detail": "10 files present",
+      "elapsed_ms": 0.25579999783076346
+    },
+    {
+      "name": "frontend:node_modules",
+      "passed": true,
+      "detail": "17 deps installed",
+      "elapsed_ms": 0.6704999977955595
+    },
+    {
+      "name": "frontend:css_import_order",
+      "passed": true,
+      "detail": "@import before @tailwind",
+      "elapsed_ms": 0.3034999972442165
+    },
+    {
+      "name": "frontend:tsconfig",
+      "passed": true,
+      "detail": "alias=@/*",
+      "elapsed_ms": 0.2908999886130914
+    },
+    {
+      "name": "frontend:env_local",
+      "passed": true,
+      "detail": "api=True maplibre=True",
+      "elapsed_ms": 0.27859999681822956
+    },
+    {
+      "name": "tsc:no_errors",
+      "passed": false,
+      "detail": "[WinError 2] The system cannot find the file specified",
+      "elapsed_ms": 8.1103999982588
+    },
+    {
+      "name": "next:build",
+      "passed": false,
+      "detail": "[WinError 2] The system cannot find the file specified",
+      "elapsed_ms": 2.5763000012375414
+    }
+  ]
+}

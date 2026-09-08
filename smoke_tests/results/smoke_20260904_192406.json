@@ -1,0 +1,412 @@
+{
+  "timestamp": "2026-09-04T19:24:06",
+  "elapsed_seconds": 43.88,
+  "total": 67,
+  "passed": 62,
+  "failed": 5,
+  "mode": "all",
+  "results": [
+    {
+      "name": "import:fastapi",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 529.9620000005234
+    },
+    {
+      "name": "import:uvicorn",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 274.0489000134403
+    },
+    {
+      "name": "import:pydantic",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.009900002623908222
+    },
+    {
+      "name": "import:duckdb",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 66.1448000028031
+    },
+    {
+      "name": "import:pandas",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 700.4725000006147
+    },
+    {
+      "name": "import:polars",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 317.2569000016665
+    },
+    {
+      "name": "import:numpy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.005199995939619839
+    },
+    {
+      "name": "import:pyomo",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 80.48249999410473
+    },
+    {
+      "name": "import:highspy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 15.001599997049198
+    },
+    {
+      "name": "import:scipy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 985.0590999994893
+    },
+    {
+      "name": "import:httpx",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 177.34110000310466
+    },
+    {
+      "name": "import:app",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.1628000065684319
+    },
+    {
+      "name": "import:app.api",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.8240999925183132
+    },
+    {
+      "name": "import:app.api.endpoints",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.971099991351366
+    },
+    {
+      "name": "import:app.api.endpoints.graph",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 734.4459000014467
+    },
+    {
+      "name": "import:app.core",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.007300011930055916
+    },
+    {
+      "name": "import:app.core.bulk_loader",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0026999914553016424
+    },
+    {
+      "name": "import:app.optimization",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0023999891709536314
+    },
+    {
+      "name": "import:app.optimization.demand_engine",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0025000044843181968
+    },
+    {
+      "name": "import:app.services",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0017999991541728377
+    },
+    {
+      "name": "import:app.services.graph_service",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0018999999156221747
+    },
+    {
+      "name": "import:app.services.simulation_runner",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.773300002445467
+    },
+    {
+      "name": "import:app.services.by_exporter",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.220199996372685
+    },
+    {
+      "name": "import:app.services.bottleneck_tracer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.4462000001221895
+    },
+    {
+      "name": "import:app.services.mitigation_sandbox",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.009800001862458885
+    },
+    {
+      "name": "import:app.services.substitutions",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.587499999208376
+    },
+    {
+      "name": "import:models",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 57.20969999674708
+    },
+    {
+      "name": "import:schema_config",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.011299998732283711
+    },
+    {
+      "name": "import:file_parser",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.5614000003552064
+    },
+    {
+      "name": "import:optimizer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.5274000072386116
+    },
+    {
+      "name": "duckdb:memory_ops",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 30.02159998868592
+    },
+    {
+      "name": "pydantic:entity_models",
+      "passed": true,
+      "detail": "22 models",
+      "elapsed_ms": 0.06520000169984996
+    },
+    {
+      "name": "pyomo:highs_solve",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 18.39789999939967
+    },
+    {
+      "name": "polars:pandas_interop",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 8.980300000985153
+    },
+    {
+      "name": "service:graph_service_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.004899993655271828
+    },
+    {
+      "name": "service:simulation_runner_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0037999998312443495
+    },
+    {
+      "name": "module:optimizer_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.003600012860260904
+    },
+    {
+      "name": "fastapi:testclient_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 30.849599992507137
+    },
+    {
+      "name": "api:health_check",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 18.380199995590374
+    },
+    {
+      "name": "api:entities_list",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 9.049100000993349
+    },
+    {
+      "name": "api:swagger_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 6.8076000025030226
+    },
+    {
+      "name": "api:openapi_schema",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 29.182799989939667
+    },
+    {
+      "name": "api:network_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 1067.0704999938607
+    },
+    {
+      "name": "api:bom_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 1217.6382999896305
+    },
+    {
+      "name": "api:openapi_paths_count",
+      "passed": true,
+      "detail": "8 paths",
+      "elapsed_ms": 8.39540000015404
+    },
+    {
+      "name": "api_contract:client_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.3715999919222668
+    },
+    {
+      "name": "contract:health_check",
+      "passed": true,
+      "detail": "keys=['status']",
+      "elapsed_ms": 8.415199990849942
+    },
+    {
+      "name": "contract:entities_list",
+      "passed": true,
+      "detail": "keys=['supported_entities', 'filename_pattern', 'legacy_filenames', 'examples']",
+      "elapsed_ms": 9.278300000005402
+    },
+    {
+      "name": "contract:network_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'summary', 'scenario_id', 'data_dir']",
+      "elapsed_ms": 1724.6465999924112
+    },
+    {
+      "name": "contract:bom_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'root_item', 'root_loc', 'summary']",
+      "elapsed_ms": 1368.9152000006288
+    },
+    {
+      "name": "contract:graph_schema",
+      "passed": true,
+      "detail": "192 nodes, 196 edges",
+      "elapsed_ms": 1460.9274999966146
+    },
+    {
+      "name": "contract:bom_graph_schema",
+      "passed": true,
+      "detail": "1 nodes, 0 edges",
+      "elapsed_ms": 1444.3331000074977
+    },
+    {
+      "name": "contract:openapi_structure",
+      "passed": true,
+      "detail": "8 paths, 5 schemas",
+      "elapsed_ms": 9.72310001088772
+    },
+    {
+      "name": "frontend:package_json",
+      "passed": true,
+      "detail": "next=^16.3.4",
+      "elapsed_ms": 1.1904999992111698
+    },
+    {
+      "name": "frontend:component_files",
+      "passed": true,
+      "detail": "10 files present",
+      "elapsed_ms": 0.6428000051528215
+    },
+    {
+      "name": "frontend:node_modules",
+      "passed": true,
+      "detail": "23 deps installed",
+      "elapsed_ms": 1.721200009342283
+    },
+    {
+      "name": "frontend:css_import_order",
+      "passed": true,
+      "detail": "@import before @tailwind",
+      "elapsed_ms": 0.7365000055870041
+    },
+    {
+      "name": "frontend:tsconfig",
+      "passed": true,
+      "detail": "alias=@/*",
+      "elapsed_ms": 0.7448999967891723
+    },
+    {
+      "name": "frontend:env_local",
+      "passed": true,
+      "detail": "api=True maplibre=True",
+      "elapsed_ms": 0.7012999994913116
+    },
+    {
+      "name": "tsc:no_errors",
+      "passed": true,
+      "detail": "Clean compilation",
+      "elapsed_ms": 7433.924900004058
+    },
+    {
+      "name": "next:build",
+      "passed": true,
+      "detail": "Build succeeded",
+      "elapsed_ms": 13487.41919999884
+    },
+    {
+      "name": "live:backend_health",
+      "passed": false,
+      "detail": "status=0 body=<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+      "elapsed_ms": 2136.7025000072317
+    },
+    {
+      "name": "live:backend_entities",
+      "passed": false,
+      "detail": "status=0 body=<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+      "elapsed_ms": 2052.8140000096755
+    },
+    {
+      "name": "live:backend_docs",
+      "passed": false,
+      "detail": "status=0 body=<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+      "elapsed_ms": 2028.975299996091
+    },
+    {
+      "name": "live:backend_graph",
+      "passed": false,
+      "detail": "status=0 body=<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+      "elapsed_ms": 2057.040700005018
+    },
+    {
+      "name": "live:frontend",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 120.16030000813771
+    },
+    {
+      "name": "live:cross_service",
+      "passed": false,
+      "detail": "backend down",
+      "elapsed_ms": 2105.933900005766
+    }
+  ]
+}

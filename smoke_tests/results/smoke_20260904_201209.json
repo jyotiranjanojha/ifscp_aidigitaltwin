@@ -1,0 +1,443 @@
+{
+  "timestamp": "2026-09-04T20:12:09",
+  "elapsed_seconds": 30.99,
+  "total": 71,
+  "passed": 71,
+  "failed": 0,
+  "warnings": 0,
+  "mode": "all",
+  "results": [
+    {
+      "name": "import:fastapi",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 494.66240001493134
+    },
+    {
+      "name": "import:uvicorn",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 313.95100001827814
+    },
+    {
+      "name": "import:pydantic",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.005199981387704611
+    },
+    {
+      "name": "import:duckdb",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 42.638300015823916
+    },
+    {
+      "name": "import:pandas",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 800.8554999832995
+    },
+    {
+      "name": "import:polars",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 442.5010000122711
+    },
+    {
+      "name": "import:numpy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.006399990525096655
+    },
+    {
+      "name": "import:pyomo",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 110.06010000710376
+    },
+    {
+      "name": "import:highspy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 17.777200002456084
+    },
+    {
+      "name": "import:scipy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1124.0326999977697
+    },
+    {
+      "name": "import:httpx",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 133.0657000071369
+    },
+    {
+      "name": "import:app",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.2471999798435718
+    },
+    {
+      "name": "import:app.api",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.4503999846056104
+    },
+    {
+      "name": "import:app.api.endpoints",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.8566000033169985
+    },
+    {
+      "name": "import:app.api.endpoints.graph",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 585.5107000097632
+    },
+    {
+      "name": "import:app.core",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.00869997893460095
+    },
+    {
+      "name": "import:app.core.bulk_loader",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0028999929782003164
+    },
+    {
+      "name": "import:app.optimization",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0042000028770416975
+    },
+    {
+      "name": "import:app.optimization.demand_engine",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0021999876480549574
+    },
+    {
+      "name": "import:app.services",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0021999876480549574
+    },
+    {
+      "name": "import:app.services.graph_service",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.001900014467537403
+    },
+    {
+      "name": "import:app.services.simulation_runner",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.790699974866584
+    },
+    {
+      "name": "import:app.services.by_exporter",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.421400015009567
+    },
+    {
+      "name": "import:app.services.bottleneck_tracer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.6359000001102686
+    },
+    {
+      "name": "import:app.services.mitigation_sandbox",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0045000051613897085
+    },
+    {
+      "name": "import:app.services.substitutions",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.5796000079717487
+    },
+    {
+      "name": "import:models",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 33.603399991989136
+    },
+    {
+      "name": "import:schema_config",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.007299997378140688
+    },
+    {
+      "name": "import:file_parser",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.708900002995506
+    },
+    {
+      "name": "import:optimizer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.0872000022791326
+    },
+    {
+      "name": "duckdb:memory_ops",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 24.814999982481822
+    },
+    {
+      "name": "pydantic:entity_models",
+      "passed": true,
+      "detail": "22 models",
+      "elapsed_ms": 0.048999994760379195
+    },
+    {
+      "name": "pyomo:highs_solve",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 14.216899988241494
+    },
+    {
+      "name": "polars:pandas_interop",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 6.947799993213266
+    },
+    {
+      "name": "service:graph_service_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.004999979864805937
+    },
+    {
+      "name": "service:simulation_runner_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0040000013541430235
+    },
+    {
+      "name": "module:optimizer_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0036999990697950125
+    },
+    {
+      "name": "fastapi:testclient_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 28.59940001508221
+    },
+    {
+      "name": "api:health_check",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 22.36459997948259
+    },
+    {
+      "name": "api:entities_list",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 26.13419998669997
+    },
+    {
+      "name": "api:swagger_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 12.625600007595494
+    },
+    {
+      "name": "api:openapi_schema",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 44.50200000428595
+    },
+    {
+      "name": "api:network_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 845.7036000036169
+    },
+    {
+      "name": "api:bom_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 755.3434000001289
+    },
+    {
+      "name": "api:openapi_paths_count",
+      "passed": true,
+      "detail": "8 paths",
+      "elapsed_ms": 5.637800000840798
+    },
+    {
+      "name": "api_contract:client_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.21250001736916602
+    },
+    {
+      "name": "contract:health_check",
+      "passed": true,
+      "detail": "keys=['status']",
+      "elapsed_ms": 5.017699993913993
+    },
+    {
+      "name": "contract:entities_list",
+      "passed": true,
+      "detail": "keys=['supported_entities', 'filename_pattern', 'legacy_filenames', 'examples']",
+      "elapsed_ms": 5.817800003569573
+    },
+    {
+      "name": "contract:network_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'summary', 'scenario_id', 'data_dir']",
+      "elapsed_ms": 845.4636000096798
+    },
+    {
+      "name": "contract:bom_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'root_item', 'root_loc', 'summary']",
+      "elapsed_ms": 777.9065000067931
+    },
+    {
+      "name": "contract:graph_schema",
+      "passed": true,
+      "detail": "192 nodes, 196 edges",
+      "elapsed_ms": 900.6163000012748
+    },
+    {
+      "name": "contract:bom_graph_schema",
+      "passed": true,
+      "detail": "1 nodes, 0 edges",
+      "elapsed_ms": 804.9936999741476
+    },
+    {
+      "name": "contract:openapi_structure",
+      "passed": true,
+      "detail": "8 paths, 5 schemas",
+      "elapsed_ms": 5.883000005269423
+    },
+    {
+      "name": "solver:load_by_data",
+      "passed": true,
+      "detail": "22 files",
+      "elapsed_ms": 10.13849998707883
+    },
+    {
+      "name": "solver:heuristic",
+      "passed": true,
+      "detail": "method=greedy_heuristic met=128250.0 unmet=0.0 cost=128250.0 shipments=18",
+      "elapsed_ms": 164.39730001729913
+    },
+    {
+      "name": "solver:lpopt",
+      "passed": true,
+      "detail": "method=lp_highs met=128250.0 unmet=0.0 cost=128250.0 shipments=18",
+      "elapsed_ms": 188.70050000259653
+    },
+    {
+      "name": "solver:compare_both",
+      "passed": true,
+      "detail": "h_cost=128250.0 lp_cost=128250.0",
+      "elapsed_ms": 330.0753000075929
+    },
+    {
+      "name": "frontend:package_json",
+      "passed": true,
+      "detail": "next=^16.3.4",
+      "elapsed_ms": 0.5739000043831766
+    },
+    {
+      "name": "frontend:component_files",
+      "passed": true,
+      "detail": "10 files present",
+      "elapsed_ms": 0.3625000244937837
+    },
+    {
+      "name": "frontend:node_modules",
+      "passed": true,
+      "detail": "23 deps installed",
+      "elapsed_ms": 1.516999996965751
+    },
+    {
+      "name": "frontend:css_import_order",
+      "passed": true,
+      "detail": "@import before @tailwind",
+      "elapsed_ms": 0.6536000000778586
+    },
+    {
+      "name": "frontend:tsconfig",
+      "passed": true,
+      "detail": "alias=@/*",
+      "elapsed_ms": 0.4206000012345612
+    },
+    {
+      "name": "frontend:env_local",
+      "passed": true,
+      "detail": "api=True maplibre=True",
+      "elapsed_ms": 0.5040999967604876
+    },
+    {
+      "name": "tsc:no_errors",
+      "passed": true,
+      "detail": "Clean compilation",
+      "elapsed_ms": 4924.998000002233
+    },
+    {
+      "name": "next:build",
+      "passed": true,
+      "detail": "Build succeeded",
+      "elapsed_ms": 13957.887700002175
+    },
+    {
+      "name": "live:backend_health",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 107.66989999683574,
+      "warning": false
+    },
+    {
+      "name": "live:backend_entities",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 14.617800014093518,
+      "warning": false
+    },
+    {
+      "name": "live:backend_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 8.83489998523146,
+      "warning": false
+    },
+    {
+      "name": "live:backend_graph",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 1814.873199997237,
+      "warning": false
+    },
+    {
+      "name": "live:frontend",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 93.56239999760874,
+      "warning": false
+    },
+    {
+      "name": "live:cross_service",
+      "passed": true,
+      "detail": "backend+frontend reachable",
+      "elapsed_ms": 95.12310000718571,
+      "warning": false
+    }
+  ]
+}

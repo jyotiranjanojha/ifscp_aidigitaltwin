@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-09-04T19:52:31",
+  "elapsed_seconds": 21.27,
+  "total": 8,
+  "passed": 8,
+  "failed": 0,
+  "warnings": 0,
+  "mode": "all",
+  "results": [
+    {
+      "name": "frontend:package_json",
+      "passed": true,
+      "detail": "next=^16.3.4",
+      "elapsed_ms": 0.7505000103265047
+    },
+    {
+      "name": "frontend:component_files",
+      "passed": true,
+      "detail": "10 files present",
+      "elapsed_ms": 0.2762000076472759
+    },
+    {
+      "name": "frontend:node_modules",
+      "passed": true,
+      "detail": "23 deps installed",
+      "elapsed_ms": 1.0809999948833138
+    },
+    {
+      "name": "frontend:css_import_order",
+      "passed": true,
+      "detail": "@import before @tailwind",
+      "elapsed_ms": 0.38510002195835114
+    },
+    {
+      "name": "frontend:tsconfig",
+      "passed": true,
+      "detail": "alias=@/*",
+      "elapsed_ms": 0.3764999855775386
+    },
+    {
+      "name": "frontend:env_local",
+      "passed": true,
+      "detail": "api=True maplibre=True",
+      "elapsed_ms": 0.35799999022856355
+    },
+    {
+      "name": "tsc:no_errors",
+      "passed": true,
+      "detail": "Clean compilation",
+      "elapsed_ms": 4104.098000010708
+    },
+    {
+      "name": "next:build",
+      "passed": true,
+      "detail": "Build succeeded",
+      "elapsed_ms": 17149.969900026917
+    }
+  ]
+}

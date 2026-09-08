@@ -1,0 +1,328 @@
+{
+  "timestamp": "2026-09-04T19:14:01",
+  "elapsed_seconds": 15.65,
+  "total": 53,
+  "passed": 49,
+  "failed": 4,
+  "mode": "all",
+  "results": [
+    {
+      "name": "import:fastapi",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 902.8703000076348
+    },
+    {
+      "name": "import:uvicorn",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 324.39439999870956
+    },
+    {
+      "name": "import:pydantic",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.004899993655271828
+    },
+    {
+      "name": "import:duckdb",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 273.21200000005774
+    },
+    {
+      "name": "import:pandas",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2102.7472999994643
+    },
+    {
+      "name": "import:polars",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 718.8669000024674
+    },
+    {
+      "name": "import:numpy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.008200004231184721
+    },
+    {
+      "name": "import:pyomo",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 137.11330000660382
+    },
+    {
+      "name": "import:highspy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 39.81020000355784
+    },
+    {
+      "name": "import:scipy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2044.2801999888616
+    },
+    {
+      "name": "import:httpx",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 310.34169999475125
+    },
+    {
+      "name": "import:app",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.2029000063193962
+    },
+    {
+      "name": "import:app.api",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.2212000001454726
+    },
+    {
+      "name": "import:app.api.endpoints",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.1000000085914508
+    },
+    {
+      "name": "import:app.api.endpoints.graph",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1170.266700006323
+    },
+    {
+      "name": "import:app.core",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.009000010322779417
+    },
+    {
+      "name": "import:app.core.bulk_loader",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0030999945010989904
+    },
+    {
+      "name": "import:app.optimization",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0028999929782003164
+    },
+    {
+      "name": "import:app.optimization.demand_engine",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0024999899324029684
+    },
+    {
+      "name": "import:app.services",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0033999967854470015
+    },
+    {
+      "name": "import:app.services.graph_service",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0023999891709536314
+    },
+    {
+      "name": "import:app.services.simulation_runner",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 3.1562999938614666
+    },
+    {
+      "name": "import:app.services.by_exporter",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 3.236699994886294
+    },
+    {
+      "name": "import:app.services.bottleneck_tracer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 3.2097999937832355
+    },
+    {
+      "name": "import:app.services.mitigation_sandbox",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.00960000033956021
+    },
+    {
+      "name": "import:app.services.substitutions",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.9673999961232767
+    },
+    {
+      "name": "import:models",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 66.28539999655914
+    },
+    {
+      "name": "import:schema_config",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.00829999044071883
+    },
+    {
+      "name": "import:file_parser",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.669599994784221
+    },
+    {
+      "name": "import:optimizer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.473100001225248
+    },
+    {
+      "name": "duckdb:memory_ops",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 86.59189999161754
+    },
+    {
+      "name": "pydantic:entity_models",
+      "passed": true,
+      "detail": "22 models",
+      "elapsed_ms": 0.07449999975506216
+    },
+    {
+      "name": "pyomo:highs_solve",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 37.704399990616366
+    },
+    {
+      "name": "polars:pandas_interop",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 44.18640000221785
+    },
+    {
+      "name": "service:graph_service_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.011900003300979733
+    },
+    {
+      "name": "service:simulation_runner_import",
+      "passed": false,
+      "detail": "cannot import name 'SimulationRunner' from 'app.services.simulation_runner' (C:\\Users\\jojha\\OneDrive - Intel Corporation\\Documents\\sp_digitaltwin\\backend\\app\\services\\simulation_runner.py)",
+      "elapsed_ms": 0.03130000550299883
+    },
+    {
+      "name": "module:optimizer_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0026000052457675338
+    },
+    {
+      "name": "fastapi:testclient_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 39.59420000319369
+    },
+    {
+      "name": "api:health_check",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 23.321700005908497
+    },
+    {
+      "name": "api:entities_list",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 9.109300008276477
+    },
+    {
+      "name": "api:swagger_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 8.13410000409931
+    },
+    {
+      "name": "api:openapi_schema",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 40.89119999844115
+    },
+    {
+      "name": "api:network_graph_fallback",
+      "passed": false,
+      "detail": "Unable to serialize unknown type: <class 'numpy.int64'>",
+      "elapsed_ms": 1244.4249999971362
+    },
+    {
+      "name": "api:bom_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 1052.6969000056852
+    },
+    {
+      "name": "api:openapi_paths_count",
+      "passed": true,
+      "detail": "8 paths",
+      "elapsed_ms": 7.1858000010252
+    },
+    {
+      "name": "api_contract:client_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.3563000063877553
+    },
+    {
+      "name": "contract:health_check",
+      "passed": true,
+      "detail": "keys=['status']",
+      "elapsed_ms": 7.347699996898882
+    },
+    {
+      "name": "contract:entities_list",
+      "passed": true,
+      "detail": "keys=['supported_entities', 'filename_pattern', 'legacy_filenames', 'examples']",
+      "elapsed_ms": 7.584000006318092
+    },
+    {
+      "name": "contract:network_graph",
+      "passed": false,
+      "detail": "Unable to serialize unknown type: <class 'numpy.int64'>",
+      "elapsed_ms": 1276.3415000081295
+    },
+    {
+      "name": "contract:bom_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'root_item', 'root_loc', 'summary']",
+      "elapsed_ms": 1165.4905000032159
+    },
+    {
+      "name": "contract:graph_schema",
+      "passed": false,
+      "detail": "Unable to serialize unknown type: <class 'numpy.int64'>",
+      "elapsed_ms": 1365.7038999954239
+    },
+    {
+      "name": "contract:bom_graph_schema",
+      "passed": true,
+      "detail": "1 nodes, 0 edges",
+      "elapsed_ms": 1083.1425999931525
+    },
+    {
+      "name": "contract:openapi_structure",
+      "passed": true,
+      "detail": "8 paths, 5 schemas",
+      "elapsed_ms": 7.316099989111535
+    }
+  ]
+}

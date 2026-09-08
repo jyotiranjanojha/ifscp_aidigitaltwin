@@ -1,0 +1,353 @@
+{
+  "timestamp": "2026-09-04T21:36:03",
+  "elapsed_seconds": 12.74,
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "warnings": 0,
+  "mode": "all",
+  "results": [
+    {
+      "name": "import:fastapi",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 571.7674999905284
+    },
+    {
+      "name": "import:uvicorn",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 299.3924999900628
+    },
+    {
+      "name": "import:pydantic",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.005699985194951296
+    },
+    {
+      "name": "import:duckdb",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 52.39739999524318
+    },
+    {
+      "name": "import:pandas",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 994.1186000069138
+    },
+    {
+      "name": "import:polars",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 425.80440000165254
+    },
+    {
+      "name": "import:numpy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.010499992640689015
+    },
+    {
+      "name": "import:pyomo",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 87.35210000304505
+    },
+    {
+      "name": "import:highspy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 13.994299981277436
+    },
+    {
+      "name": "import:scipy",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1217.8215000021737
+    },
+    {
+      "name": "import:httpx",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 154.22890000627376
+    },
+    {
+      "name": "import:app",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.1076000228058547
+    },
+    {
+      "name": "import:app.api",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.4124999870546162
+    },
+    {
+      "name": "import:app.api.endpoints",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.2753000191878527
+    },
+    {
+      "name": "import:app.api.endpoints.graph",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 866.1908000067342
+    },
+    {
+      "name": "import:app.core",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.011099997209385037
+    },
+    {
+      "name": "import:app.core.bulk_loader",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.018300022929906845
+    },
+    {
+      "name": "import:app.optimization",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0048000074457377195
+    },
+    {
+      "name": "import:app.optimization.demand_engine",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0022999884095042944
+    },
+    {
+      "name": "import:app.services",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0026999914553016424
+    },
+    {
+      "name": "import:app.services.graph_service",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.002200016751885414
+    },
+    {
+      "name": "import:app.services.simulation_runner",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 8.237299975007772
+    },
+    {
+      "name": "import:app.services.by_exporter",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.7323999966029078
+    },
+    {
+      "name": "import:app.services.bottleneck_tracer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.3557000095024705
+    },
+    {
+      "name": "import:app.services.mitigation_sandbox",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.006399990525096655
+    },
+    {
+      "name": "import:app.services.substitutions",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.5329999916721135
+    },
+    {
+      "name": "import:models",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 58.779100014362484
+    },
+    {
+      "name": "import:schema_config",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.009000010322779417
+    },
+    {
+      "name": "import:file_parser",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 1.5508999931626022
+    },
+    {
+      "name": "import:optimizer",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 2.1176000009290874
+    },
+    {
+      "name": "duckdb:memory_ops",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 33.28590001910925
+    },
+    {
+      "name": "pydantic:entity_models",
+      "passed": true,
+      "detail": "22 models",
+      "elapsed_ms": 0.08420000085607171
+    },
+    {
+      "name": "pyomo:highs_solve",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 24.0300000004936
+    },
+    {
+      "name": "polars:pandas_interop",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 8.254899992607534
+    },
+    {
+      "name": "service:graph_service_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0048000074457377195
+    },
+    {
+      "name": "service:simulation_runner_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0034999975468963385
+    },
+    {
+      "name": "module:optimizer_import",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.0039000005926936865
+    },
+    {
+      "name": "fastapi:testclient_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 31.23970000888221
+    },
+    {
+      "name": "api:health_check",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 25.192200002493337
+    },
+    {
+      "name": "api:entities_list",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 10.738400014815852
+    },
+    {
+      "name": "api:swagger_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 8.13100000959821
+    },
+    {
+      "name": "api:openapi_schema",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 26.469700009329244
+    },
+    {
+      "name": "api:network_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 1060.65130000934
+    },
+    {
+      "name": "api:bom_graph_fallback",
+      "passed": true,
+      "detail": "status=200 json=ok",
+      "elapsed_ms": 1242.7840000018477
+    },
+    {
+      "name": "api:openapi_paths_count",
+      "passed": true,
+      "detail": "8 paths",
+      "elapsed_ms": 8.079100021859631
+    },
+    {
+      "name": "api_contract:client_init",
+      "passed": true,
+      "detail": "",
+      "elapsed_ms": 0.3386999887879938
+    },
+    {
+      "name": "contract:health_check",
+      "passed": true,
+      "detail": "keys=['status']",
+      "elapsed_ms": 8.341000007931143
+    },
+    {
+      "name": "contract:entities_list",
+      "passed": true,
+      "detail": "keys=['supported_entities', 'filename_pattern', 'legacy_filenames', 'examples']",
+      "elapsed_ms": 8.201699994970113
+    },
+    {
+      "name": "contract:network_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'summary', 'scenario_id', 'data_dir']",
+      "elapsed_ms": 1259.3076000048313
+    },
+    {
+      "name": "contract:bom_graph",
+      "passed": true,
+      "detail": "keys=['nodes', 'edges', 'root_item', 'root_loc', 'summary']",
+      "elapsed_ms": 1054.2293999751564
+    },
+    {
+      "name": "contract:graph_schema",
+      "passed": true,
+      "detail": "192 nodes, 196 edges",
+      "elapsed_ms": 996.0423999873456
+    },
+    {
+      "name": "contract:bom_graph_schema",
+      "passed": true,
+      "detail": "1 nodes, 0 edges",
+      "elapsed_ms": 1092.7698999876156
+    },
+    {
+      "name": "contract:openapi_structure",
+      "passed": true,
+      "detail": "8 paths, 5 schemas",
+      "elapsed_ms": 7.66730000032112
+    },
+    {
+      "name": "solver:load_by_data",
+      "passed": true,
+      "detail": "22 files",
+      "elapsed_ms": 14.83820000430569
+    },
+    {
+      "name": "solver:heuristic",
+      "passed": true,
+      "detail": "method=greedy_heuristic met=128250.0 unmet=0.0 cost=128250.0 shipments=18",
+      "elapsed_ms": 194.21449999208562
+    },
+    {
+      "name": "solver:lpopt",
+      "passed": true,
+      "detail": "method=lp_highs met=128250.0 unmet=0.0 cost=128250.0 shipments=18",
+      "elapsed_ms": 338.902000017697
+    },
+    {
+      "name": "solver:compare_both",
+      "passed": true,
+      "detail": "h_cost=128250.0 lp_cost=128250.0",
+      "elapsed_ms": 501.32740000844933
+    }
+  ]
+}

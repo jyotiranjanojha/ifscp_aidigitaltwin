@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-04T20:14:19",
+  "elapsed_seconds": 2.24,
+  "total": 6,
+  "passed": 6,
+  "failed": 0,
+  "warnings": 0,
+  "mode": "all",
+  "results": [
+    {
+      "name": "live:backend_health",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 100.92629998689517,
+      "warning": false
+    },
+    {
+      "name": "live:backend_entities",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 8.18279999657534,
+      "warning": false
+    },
+    {
+      "name": "live:backend_docs",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 6.754100002581254,
+      "warning": false
+    },
+    {
+      "name": "live:backend_graph",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 1795.8714999840595,
+      "warning": false
+    },
+    {
+      "name": "live:frontend",
+      "passed": true,
+      "detail": "status=200",
+      "elapsed_ms": 98.56720000971109,
+      "warning": false
+    },
+    {
+      "name": "live:cross_service",
+      "passed": true,
+      "detail": "backend+frontend reachable",
+      "elapsed_ms": 104.72509998362511,
+      "warning": false
+    }
+  ]
+}

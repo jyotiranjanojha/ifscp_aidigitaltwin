@@ -1,0 +1,47 @@
+{
+  "name": "sp-digital-twin-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@deck.gl/aggregation-layers": "^9.0.0",
+    "@deck.gl/core": "^9.0.0",
+    "@deck.gl/geo-layers": "^9.0.0",
+    "@deck.gl/layers": "^9.0.0",
+    "@deck.gl/mapbox": "^9.0.0",
+    "@deck.gl/react": "^9.0.0",
+    "@luma.gl/constants": "^9.0.28",
+    "@luma.gl/core": "^9.0.28",
+    "@luma.gl/engine": "^9.0.28",
+    "@luma.gl/gltf": "^9.0.28",
+    "@luma.gl/shadertools": "^9.0.28",
+    "@luma.gl/webgl": "^9.0.28",
+    "@xyflow/react": "^12.0.0",
+    "axios": "^1.6.8",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.378.0",
+    "maplibre-gl": "^4.0.0",
+    "next": "^16.3.4",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "recharts": "^2.12.0",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^16.3.4",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.0"
+  }
+}

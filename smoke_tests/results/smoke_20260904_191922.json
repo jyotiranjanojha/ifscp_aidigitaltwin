@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-09-04T19:19:22",
+  "elapsed_seconds": 18.27,
+  "total": 8,
+  "passed": 7,
+  "failed": 1,
+  "mode": "all",
+  "results": [
+    {
+      "name": "frontend:package_json",
+      "passed": true,
+      "detail": "next=^16.3.4",
+      "elapsed_ms": 0.3862000012304634
+    },
+    {
+      "name": "frontend:component_files",
+      "passed": true,
+      "detail": "10 files present",
+      "elapsed_ms": 0.2310999989276752
+    },
+    {
+      "name": "frontend:node_modules",
+      "passed": true,
+      "detail": "17 deps installed",
+      "elapsed_ms": 0.6611999997403473
+    },
+    {
+      "name": "frontend:css_import_order",
+      "passed": true,
+      "detail": "@import before @tailwind",
+      "elapsed_ms": 0.30610000248998404
+    },
+    {
+      "name": "frontend:tsconfig",
+      "passed": true,
+      "detail": "alias=@/*",
+      "elapsed_ms": 0.28979999478906393
+    },
+    {
+      "name": "frontend:env_local",
+      "passed": true,
+      "detail": "api=True maplibre=True",
+      "elapsed_ms": 0.30449999030679464
+    },
+    {
+      "name": "tsc:no_errors",
+      "passed": true,
+      "detail": "Clean compilation",
+      "elapsed_ms": 4621.28870000015
+    },
+    {
+      "name": "next:build",
+      "passed": false,
+      "detail": "Build failed:     ./app/page.tsx [Server Component] |     at ./node_modules/ (deck.gl/core/dist/lib/attribute/gl-utils.js:1:1) |     at ./node_modules/ (deck.gl/core/dist/lib/attribute/gl-utils.js:1:1) |     at ./node_modules/ (deck.gl/core/dist/shaderlib/index.js:21:1) |     at ./node_modules/ (deck.gl/core/dist/shaderlib/index.js:21:1)",
+      "elapsed_ms": 13627.587000009953
+    }
+  ]
+}

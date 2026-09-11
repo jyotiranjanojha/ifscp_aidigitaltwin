@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import DualSolverComparator from '@/src/components/DualSolverComparator';
+import ObjectiveModeSelector from '@/src/components/ObjectiveModeSelector';
 import SolverSelector from '@/src/components/SolverSelector';
 import SupplyChainGraphTwin from '@/src/components/visualization/SupplyChainGraphTwin';
 import GeoSpatialFlowTwinLoader from '@/src/components/visualization/GeoSpatialFlowTwinLoader';
@@ -29,6 +30,7 @@ import {
   numberValue,
   runSimulation,
   type BottleneckDiagnostic,
+  type ObjectiveMode,
   type RunSimulationResult,
   type ScenarioDelta,
   type SolverResult,
@@ -98,6 +100,7 @@ export default function PlannerCockpit() {
   const [draft, setDraft] = useState<RiskDraft>({ type: 'sourcing', key: '', value: '' });
   const [mitigations, setMitigations] = useState<MitigationToggles>({ overtime: false, expedite: false, altBom: false });
   const [solverType, setSolverType] = useState<SolverType>('heuristic');
+  const [objectiveMode, setObjectiveMode] = useState<ObjectiveMode>('MAX_DEMAND_FULFILLMENT');
   const [results, setResults] = useState<RunSimulationResult | null>(null);
   const [selectedDiagnostic, setSelectedDiagnostic] = useState<BottleneckDiagnostic | null>(null);
   const [lastBenchmarks, setLastBenchmarks] = useState<{ heuristic?: number; lpopt?: number }>({});
@@ -165,7 +168,7 @@ export default function PlannerCockpit() {
     setError(null);
     setResults(null);
     try {
-      const data = await runSimulation({ files, solver_type: solverType, scenario_deltas: scenarioDeltas, risk_adjustments: riskOverrides });
+      const data = await runSimulation({ files, solver_type: solverType, objective_mode: objectiveMode, scenario_deltas: scenarioDeltas, risk_adjustments: riskOverrides });
       setResults(data);
       setLastBenchmarks(extractBenchmarks(data));
       setSelectedDiagnostic(buildDiagnostics(primaryResult(data))[0] || null);
@@ -233,6 +236,7 @@ export default function PlannerCockpit() {
             </div>
             <div className="w-full space-y-3 lg:w-auto lg:min-w-[520px]">
               <SolverSelector solverType={solverType} onChange={setSolverType} heuristicSeconds={lastBenchmarks.heuristic} lpoptSeconds={lastBenchmarks.lpopt} disabled={loading} />
+              <ObjectiveModeSelector objectiveMode={objectiveMode} onChange={setObjectiveMode} disabled={loading} />
               <div className="rounded-md bg-slate-50 p-3 text-sm text-slate-600">
                 <div className="text-sm text-slate-600">
                   <span className="font-semibold text-slate-800">Baseline run is allowed.</span> Overrides are optional after all 22 files are loaded.
@@ -273,11 +277,11 @@ export default function PlannerCockpit() {
         />
 
         <Panel title="Decision Dashboard" icon={BarChart3} action={<button onClick={() => setExportOpen(true)} disabled={!results} className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"><Download className="h-4 w-4" /> Export</button>}>
-          <SolverExecutionBanner solverType={solverType} result={results} isReady={isReady} />
+          <SolverExecutionBanner solverType={solverType} objectiveMode={objectiveMode} result={results} isReady={isReady} />
           {isCompareResult(results) && solverType === 'compare_both' ? (
             <DualSolverComparator result={results} />
           ) : results && selectedResult ? (
-            <DashboardBody result={selectedResult} waterfallData={waterfallData} diagnostics={diagnostics} impact={impact} selectedDiagnostic={selectedDiagnostic} onSelectDiagnostic={(row) => { setSelectedDiagnostic(row); handleFocusNode(row.bottleneck_entity, row.item); }} onQuickMitigate={handleQuickMitigate} />
+            <DashboardBody result={selectedResult} waterfallData={waterfallData} diagnostics={diagnostics} impact={impact} objectiveMode={objectiveMode} selectedDiagnostic={selectedDiagnostic} onSelectDiagnostic={(row) => { setSelectedDiagnostic(row); handleFocusNode(row.bottleneck_entity, row.item); }} onQuickMitigate={handleQuickMitigate} />
           ) : (
             <EmptyState ready={isReady} />
           )}
@@ -321,6 +325,7 @@ export default function PlannerCockpit() {
               <DemandWaterfallTab
                 waterfallData={waterfallData}
                 impact={impact}
+                objectiveMode={objectiveMode}
                 diagnostics={diagnostics}
                 selectedDiagnostic={selectedDiagnostic}
                 onSelectDiagnostic={(row) => { setSelectedDiagnostic(row); handleFocusNode(row.bottleneck_entity, row.item); }}
@@ -359,19 +364,22 @@ function GitBranchIcon({ className }: { className?: string }) {
   );
 }
 
-function DemandWaterfallTab({ waterfallData, impact, diagnostics, selectedDiagnostic, onSelectDiagnostic, onQuickMitigate }: {
+function DemandWaterfallTab({ waterfallData, impact, objectiveMode, diagnostics, selectedDiagnostic, onSelectDiagnostic, onQuickMitigate }: {
   waterfallData: Array<Record<string, number | string>>;
   impact: Record<string, number>;
+  objectiveMode: ObjectiveMode;
   diagnostics: BottleneckDiagnostic[];
   selectedDiagnostic: BottleneckDiagnostic | null;
   onSelectDiagnostic: (row: BottleneckDiagnostic) => void;
   onQuickMitigate: () => void;
 }) {
+  const isDemandMode = objectiveMode === 'MAX_DEMAND_FULFILLMENT';
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-5">
+        <Kpi label="Fill Rate %" value={`${impact.fillRate.toFixed(1)}%`} highlight={isDemandMode} badge={isDemandMode ? '\u{1F3AF} SLA' : undefined} />
+        <Kpi label="Total Landed Cost" value={formatCurrency(impact.totalLandedCost)} highlight={!isDemandMode} badge={!isDemandMode ? '\u{1F4B0} Cost' : undefined} />
         <Kpi label="Revenue Protected" value={formatCurrency(impact.protectedRevenue)} />
-        <Kpi label="SLA / OTIF" value={`${impact.otif.toFixed(2)}%`} />
         <Kpi label="Mitigation Cost" value={formatCurrency(impact.mitigationCost)} />
         <Kpi label="ROI" value={`${impact.roi.toFixed(2)}x`} />
       </div>
@@ -418,8 +426,12 @@ function FlowStatus({ uploadedCount, isReady, hasRun, hasDeltas }: { uploadedCou
   return <div className="mt-4 grid gap-2 sm:grid-cols-4">{steps.map((step) => <div key={step.label} className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${step.done ? 'border-green-200 bg-green-50 text-green-800' : 'border-slate-200 bg-slate-50 text-slate-500'}`}><CheckCircle2 className="h-4 w-4" />{step.label}</div>)}</div>;
 }
 
-function SolverExecutionBanner({ solverType, result, isReady }: { solverType: SolverType; result: RunSimulationResult | null; isReady: boolean }) {
+function SolverExecutionBanner({ solverType, objectiveMode, result, isReady }: { solverType: SolverType; objectiveMode: ObjectiveMode; result: RunSimulationResult | null; isReady: boolean }) {
   const selected = solverType === 'heuristic' ? 'Heuristic' : solverType === 'lpopt' ? 'LpOpt' : 'Compare Both';
+  const objectiveLabel = objectiveMode === 'MAX_DEMAND_FULFILLMENT' ? 'Maximize Demand (SLA)' : 'Minimize Cost (Budget)';
+  const objectiveBadge = objectiveMode === 'MAX_DEMAND_FULFILLMENT'
+    ? <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">{'\u{1F3AF} Optimized for SLA'}</span>
+    : <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">{'\u{1F4B0} Optimized for Cost'}</span>;
   const executed = !result
     ? 'Not run yet'
     : isCompareResult(result)
@@ -427,11 +439,12 @@ function SolverExecutionBanner({ solverType, result, isReady }: { solverType: So
       : result.method === 'lp_highs'
         ? 'LpOpt'
         : 'Heuristic';
+  const wasUpgraded = Boolean(result && 'solver_upgraded' in result && (result as Record<string, unknown>).solver_upgraded);
   const helper = solverType === 'compare_both'
     ? 'After you click Run Solver Comparison, the dashboard switches to the side-by-side comparative analysis.'
     : 'After you click Run Solver, the dashboard shows the selected solver output.';
 
-  return <div className="mb-4 flex flex-col gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between"><div><span className="font-semibold">Selected solver:</span> {selected}<span className="mx-2 text-slate-300">|</span><span className="font-semibold">Executed:</span> {executed}</div><div className="text-slate-500">{isReady ? helper : 'Upload all 22 files to enable Run Solver.'}</div></div>;
+  return <div className="mb-4 flex flex-col gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between"><div><span className="font-semibold">Selected solver:</span> {selected}<span className="mx-2 text-slate-300">|</span><span className="font-semibold">Objective:</span> {objectiveLabel} {objectiveBadge}<span className="mx-2 text-slate-300">|</span><span className="font-semibold">Executed:</span> {executed}</div>{wasUpgraded && <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">SLA mode auto-switched to LP solver</span>}<div className="text-slate-500">{isReady ? helper : 'Upload all 22 files to enable Run Solver.'}</div></div>;
 }
 
 function Panel({ title, icon: Icon, action, children }: { title: string; icon: typeof UploadCloud; action?: React.ReactNode; children: React.ReactNode }) {
@@ -476,12 +489,20 @@ function ToggleButton({ label, detail, active, onClick }: { label: string; detai
   return <button onClick={onClick} className={`rounded-lg border p-3 text-left transition ${active ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-white hover:bg-slate-50'}`}><span className="flex items-center justify-between gap-2"><span className="font-semibold">{label}</span><span className={`h-5 w-9 rounded-full p-0.5 ${active ? 'bg-blue-600' : 'bg-slate-300'}`}><span className={`block h-4 w-4 rounded-full bg-white transition ${active ? 'translate-x-4' : ''}`} /></span></span><span className="mt-1 block text-xs text-slate-500">{detail}</span></button>;
 }
 
-function DashboardBody({ result, waterfallData, diagnostics, impact, selectedDiagnostic, onSelectDiagnostic, onQuickMitigate }: { result: SolverResult; waterfallData: Array<Record<string, number | string>>; diagnostics: BottleneckDiagnostic[]; impact: Record<string, number>; selectedDiagnostic: BottleneckDiagnostic | null; onSelectDiagnostic: (row: BottleneckDiagnostic) => void; onQuickMitigate: () => void }) {
-  return <div className="space-y-4"><DemandWaterfall data={waterfallData} impact={impact} /><BottleneckTable diagnostics={diagnostics} selected={selectedDiagnostic} onSelect={onSelectDiagnostic} onQuickMitigate={onQuickMitigate} /><ResultTables result={result} /></div>;
+function DashboardBody({ result, waterfallData, diagnostics, impact, objectiveMode, selectedDiagnostic, onSelectDiagnostic, onQuickMitigate }: { result: SolverResult; waterfallData: Array<Record<string, number | string>>; diagnostics: BottleneckDiagnostic[]; impact: Record<string, number>; objectiveMode: ObjectiveMode; selectedDiagnostic: BottleneckDiagnostic | null; onSelectDiagnostic: (row: BottleneckDiagnostic) => void; onQuickMitigate: () => void }) {
+  const tradeoff = buildTradeoffDelta(result, objectiveMode);
+  return <div className="space-y-4">{tradeoff && <TradeoffBanner tradeoff={tradeoff} />}<DemandWaterfall data={waterfallData} impact={impact} objectiveMode={objectiveMode} /><BottleneckTable diagnostics={diagnostics} selected={selectedDiagnostic} onSelect={onSelectDiagnostic} onQuickMitigate={onQuickMitigate} /><ResultTables result={result} /></div>;
 }
 
-function DemandWaterfall({ data, impact }: { data: Array<Record<string, number | string>>; impact: Record<string, number> }) {
-  return <div className="rounded-lg border border-slate-200 p-4"><div className="mb-4 grid gap-3 md:grid-cols-4"><Kpi label="Revenue Protected" value={formatCurrency(impact.protectedRevenue)} /><Kpi label="SLA / OTIF" value={`${impact.otif.toFixed(2)}%`} /><Kpi label="Mitigation Cost" value={formatCurrency(impact.mitigationCost)} /><Kpi label="ROI" value={`${impact.roi.toFixed(2)}x`} /></div><div className="h-64"><ResponsiveContainer width="100%" height="100%"><BarChart data={data}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="scenario" /><YAxis /><Tooltip formatter={(value) => Number(value).toLocaleString()} /><Legend /><Bar dataKey="Met" stackId="a" fill="#16a34a" /><Bar dataKey="Late Met" stackId="a" fill="#f59e0b" /><Bar dataKey="Unmet" stackId="a" fill="#dc2626" /></BarChart></ResponsiveContainer></div></div>;
+function DemandWaterfall({ data, impact, objectiveMode }: { data: Array<Record<string, number | string>>; impact: Record<string, number>; objectiveMode: ObjectiveMode }) {
+  const isDemandMode = objectiveMode === 'MAX_DEMAND_FULFILLMENT';
+  return <div className="rounded-lg border border-slate-200 p-4"><div className="mb-4 grid gap-3 md:grid-cols-5">
+    <Kpi label="Fill Rate %" value={`${impact.fillRate.toFixed(1)}%`} highlight={isDemandMode} badge={isDemandMode ? '\u{1F3AF} SLA' : undefined} />
+    <Kpi label="Total Landed Cost" value={formatCurrency(impact.totalLandedCost)} highlight={!isDemandMode} badge={!isDemandMode ? '\u{1F4B0} Cost' : undefined} />
+    <Kpi label="Revenue Protected" value={formatCurrency(impact.protectedRevenue)} />
+    <Kpi label="Mitigation Cost" value={formatCurrency(impact.mitigationCost)} />
+    <Kpi label="ROI" value={`${impact.roi.toFixed(2)}x`} />
+  </div><div className="h-64"><ResponsiveContainer width="100%" height="100%"><BarChart data={data}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="scenario" /><YAxis /><Tooltip formatter={(value) => Number(value).toLocaleString()} /><Legend /><Bar dataKey="Met" stackId="a" fill="#16a34a" /><Bar dataKey="Late Met" stackId="a" fill="#f59e0b" /><Bar dataKey="Unmet" stackId="a" fill="#dc2626" /></BarChart></ResponsiveContainer></div></div>;
 }
 
 function BottleneckTable({ diagnostics, selected, onSelect, onQuickMitigate }: { diagnostics: BottleneckDiagnostic[]; selected: BottleneckDiagnostic | null; onSelect: (row: BottleneckDiagnostic) => void; onQuickMitigate: () => void }) {
@@ -501,7 +522,15 @@ function ExportModal({ deltas, impact, exporting, onClose, onExport }: { deltas:
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><div className="max-h-[85vh] w-full max-w-3xl overflow-auto rounded-lg bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-semibold"><PackageOpen className="h-5 w-5 text-blue-600" /> Export Center</h2><button onClick={onClose} className="rounded p-1 hover:bg-slate-100" title="Close"><X className="h-5 w-5" /></button></div><div className="grid gap-4 md:grid-cols-2"><div className="rounded-lg border border-slate-200 p-4"><h3 className="font-semibold">Diff Preview</h3><div className="mt-3 space-y-2">{deltas.map((delta, index) => <div key={index} className="rounded-md bg-slate-50 p-3 text-sm"><p className="font-mono">{delta.entity || delta.type}: {delta.key}</p><p className="text-slate-600">New value: {String(delta.value)}</p><p className="text-slate-500">{delta.justification}</p></div>)}{!deltas.length && <p className="text-sm text-slate-500">Baseline solve completed. No override or mitigation deltas were selected, so the export will contain the baseline run manifest.</p>}</div></div><div className="rounded-lg border border-slate-200 p-4"><h3 className="font-semibold">Changelog</h3><dl className="mt-3 space-y-2 text-sm"><div>Revenue protected: {formatCurrency(impact.protectedRevenue)}</div><div>Mitigation cost: {formatCurrency(impact.mitigationCost)}</div><div>Net ROI: {impact.roi.toFixed(2)}x</div><div>Tables touched: {new Set(deltas.map((delta) => delta.entity || delta.type)).size}</div></dl><button onClick={onExport} disabled={exporting} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-40"><Download className="h-4 w-4" /> {exporting ? 'Preparing...' : 'Download BY SCPO Patch Pack'}</button></div></div></div></div>;
 }
 
-function Kpi({ label, value }: { label: string; value: string }) { return <div className="rounded-md bg-slate-50 p-3"><p className="text-xs font-semibold uppercase text-slate-500">{label}</p><p className="mt-1 text-xl font-semibold">{value}</p></div>; }
+function Kpi({ label, value, highlight, badge }: { label: string; value: string; highlight?: boolean; badge?: string }) {
+  return <div className={`rounded-md p-3 transition-colors ${highlight ? 'bg-emerald-50 ring-1 ring-emerald-200' : 'bg-slate-50'}`}>
+    <div className="flex items-center justify-between">
+      <p className={`text-xs font-semibold uppercase ${highlight ? 'text-emerald-700' : 'text-slate-500'}`}>{label}</p>
+      {badge && <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">{badge}</span>}
+    </div>
+    <p className={`mt-1 text-xl font-semibold ${highlight ? 'text-emerald-900' : ''}`}>{value}</p>
+  </div>;
+}
 function CauseTag({ cause }: { cause: string }) { const label = cause.includes('MATERIAL') ? 'Material' : cause.includes('CAPACITY') ? 'Capacity' : cause.includes('LEAD') ? 'Lead-Time' : cause.includes('SOURCING') ? 'Sourcing' : 'Other'; return <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">{label}</span>; }
 function AlertBox({ message }: { message: string }) { return <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"><AlertTriangle className="mt-0.5 h-4 w-4" /> <span>{message}</span></div>; }
 function EmptyState({ ready }: { ready: boolean }) { return <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center"><Route className="mx-auto h-8 w-8 text-slate-400" /><p className="mt-3 font-medium text-slate-700">{ready ? 'Ready to simulate' : 'Waiting for complete BY file pack'}</p><p className="mt-1 text-sm text-slate-500">{ready ? 'Run the solver to populate fulfillment, bottleneck, and export panels.' : 'Upload all required entities to unlock simulation.'}</p></div>; }
@@ -509,7 +538,7 @@ function EmptyState({ ready }: { ready: boolean }) { return <div className="roun
 function primaryResult(result: RunSimulationResult | null): SolverResult | null { return !result ? null : isCompareResult(result) ? result.lpopt_result : result; }
 function buildWaterfallData(result: RunSimulationResult | null) { const current = primaryResult(result); if (!current) return [{ scenario: 'Baseline', Met: 0, 'Late Met': 0, Unmet: 0 }, { scenario: 'What-If', Met: 0, 'Late Met': 0, Unmet: 0 }]; const summary = current.summary || {}; const demand = numberValue(summary.total_demand_qty || summary.met_qty || current.shipments?.reduce((sum, row) => sum + numberValue(row.QUANTITY), 0)); return [{ scenario: 'Baseline', Met: demand, 'Late Met': 0, Unmet: 0 }, { scenario: 'What-If', Met: numberValue(summary.met_qty || demand), 'Late Met': numberValue(summary.late_qty), Unmet: numberValue(summary.unmet_qty) }]; }
 function buildDiagnostics(result: SolverResult | null): BottleneckDiagnostic[] { if (!result) return []; if (result.diagnostics?.length) return result.diagnostics; return (result.pegging_records || []).filter((row) => row.status === 'UNMET' || row.status === 'LATE_MET').map((row) => ({ order_id: String(row.order_id || 'N/A'), item: String(row.item || 'N/A'), customer: String(row.customer || 'N/A'), unmet_qty: numberValue(row.allocated_qty), root_cause: row.status === 'LATE_MET' ? 'LEAD_TIME_CONSTRAINED' : 'SOURCING_CONSTRAINED', bottleneck_entity: String(row.bottleneck_reason || row.source_used || 'N/A'), suggested_mitigation: 'Use quick mitigation to add capacity, expedite sourcing, or enable alternate BOMs.' })); }
-function buildImpact(result: RunSimulationResult | null, deltas: ScenarioDelta[]): Record<string, number> { const current = primaryResult(result); const summary = current?.summary || {}; const mitigationCost = deltas.reduce((sum, delta) => sum + numberValue(delta.financial_impact?.mitigation_cost), 0); const protectedRevenue = numberValue(summary.revenue_at_risk ? 0 : numberValue(summary.total_demand_qty) * 100); return { protectedRevenue, mitigationCost, roi: mitigationCost ? protectedRevenue / mitigationCost : 0, otif: numberValue(summary.met_pct) }; }
+function buildImpact(result: RunSimulationResult | null, deltas: ScenarioDelta[]): Record<string, number> { const current = primaryResult(result); const summary = current?.summary || {}; const mitigationCost = deltas.reduce((sum, delta) => sum + numberValue(delta.financial_impact?.mitigation_cost), 0); const protectedRevenue = numberValue(summary.revenue_at_risk ? 0 : numberValue(summary.total_demand_qty) * 100); const fillRate = numberValue(summary.fill_rate_pct) || numberValue(summary.met_pct); const totalLandedCost = numberValue(summary.total_landed_cost) || numberValue(summary.total_cost); return { protectedRevenue, mitigationCost, roi: mitigationCost ? protectedRevenue / mitigationCost : 0, otif: numberValue(summary.met_pct), fillRate, totalLandedCost }; }
 function buildScenarioDeltas(overrides: RiskOverrides): ScenarioDelta[] { return Object.entries(overrides).flatMap(([type, values]) => Object.entries(values).map(([key, value]) => ({ type, entity: type, key, value, justification: `${OVERRIDE_TYPES[type as keyof typeof OVERRIDE_TYPES]?.label || type} override`, financial_impact: { mitigation_cost: 0 } }))); }
 function buildMitigationDeltas(mitigations: MitigationToggles, selected: BottleneckDiagnostic | null): ScenarioDelta[] { const key = selected?.order_id || 'AUTO'; const deltas: ScenarioDelta[] = []; if (mitigations.overtime) deltas.push({ type: 'res', entity: 'res', key, value: 0.15, column: 'CAPACITY', justification: 'Add 15% overtime to bottlenecked lines', financial_impact: { mitigation_cost: 8500 } }); if (mitigations.expedite) deltas.push({ type: 'sourcing', entity: 'sourcing', key, value: 0.1, justification: 'Expedite primary sourcing lanes', financial_impact: { mitigation_cost: 12000 } }); if (mitigations.altBom) deltas.push({ type: 'altbillofmaterials', entity: 'altbillofmaterials', key, value: 1, column: 'ENABLEOPT', justification: 'Enable alternate BOMs', financial_impact: { mitigation_cost: 5000 } }); return deltas; }
 function extractEntityFromFilename(filename: string): string | null { const match = filename.match(/^if_snop_([a-z]+)-(?:\d{8}|\d{14}|\d{8}-\d{6})\.csv$/i); return match ? match[1].toLowerCase() : null; }
@@ -519,3 +548,35 @@ function isValidOverrideValue(type: string, value: number): boolean { return Num
 function formatOverrideValue(type: string, value: number): string { return type === 'dfutoskufcst' ? `${value}x` : `${Math.round(value * 100)}% reduction`; }
 function extractBenchmarks(result: RunSimulationResult): { heuristic?: number; lpopt?: number } { if (isCompareResult(result)) return { heuristic: result.heuristic_result.summary?.solve_time_seconds, lpopt: result.lpopt_result.summary?.solve_time_seconds }; const seconds = result.summary?.solve_time_seconds || (result.solve_time_ms ? result.solve_time_ms / 1000 : undefined); return result.method === 'lp_highs' ? { lpopt: seconds } : { heuristic: seconds }; }
 function formatCurrency(value: number): string { return value.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
+
+interface TradeoffInfo {
+  recoveredRevenue: number;
+  incrementalCost: number;
+  message: string;
+}
+
+function buildTradeoffDelta(result: SolverResult | null, objectiveMode: ObjectiveMode): TradeoffInfo | null {
+  if (!result || objectiveMode !== 'MAX_DEMAND_FULFILLMENT') return null;
+  const summary = result.summary || {};
+  const baselineCost = numberValue(result.baseline_total_cost);
+  const scenarioCost = numberValue(summary.total_cost ?? result.total_cost);
+  const metPct = numberValue(summary.met_pct);
+  const totalDemand = numberValue(summary.total_demand_qty);
+  if (!baselineCost && !scenarioCost) return null;
+  const costDelta = scenarioCost - baselineCost;
+  const recoveredRevenue = metPct > 0 ? totalDemand * metPct / 100 * 100 : 0;
+  if (costDelta <= 0 && metPct >= 100) return null;
+  const message = costDelta > 0
+    ? `Demand Max Mode recovered +${formatCurrency(recoveredRevenue)} in revenue for an incremental expediting cost of +${formatCurrency(costDelta)}`
+    : `Demand Max Mode achieved ${metPct.toFixed(1)}% fill rate with ${formatCurrency(Math.abs(costDelta))} in cost savings`;
+  return { recoveredRevenue, incrementalCost: costDelta, message };
+}
+
+function TradeoffBanner({ tradeoff }: { tradeoff: TradeoffInfo }) {
+  const isPositive = tradeoff.incrementalCost > 0;
+  return (
+    <div className={`rounded-lg border px-4 py-3 text-sm ${isPositive ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>
+      <span className="font-semibold">{tradeoff.message}</span>
+    </div>
+  );
+}

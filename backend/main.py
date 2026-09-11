@@ -145,8 +145,14 @@ def _canonicalize_inventory_for_optimizer(inventory_df: pd.DataFrame | None) -> 
             canonical["ON_HAND"] = pd.to_numeric(canonical["ON_HAND"], errors="coerce").fillna(qty)
     if "ON_ORDER" not in canonical.columns:
         canonical["ON_ORDER"] = 0.0
+    else:
+        canonical["ON_ORDER"] = pd.to_numeric(canonical["ON_ORDER"], errors="coerce").fillna(0.0)
     if "ALLOCATED" not in canonical.columns:
         canonical["ALLOCATED"] = 0.0
+    else:
+        canonical["ALLOCATED"] = pd.to_numeric(canonical["ALLOCATED"], errors="coerce").fillna(0.0)
+    if "SAFETY_STOCK" in canonical.columns:
+        canonical["SAFETY_STOCK"] = pd.to_numeric(canonical["SAFETY_STOCK"], errors="coerce").fillna(0.0)
     return canonical
 
 
@@ -384,6 +390,7 @@ async def run_simulation(
     sku: UploadFile = File(...),
     risk_adjustments: str = Form("{}"),
     solver: str = Query("auto", description="Solver: auto, heuristic, lp"),
+    objective_mode: str = Query("MIN_COST", description="Objective: MIN_COST, MAX_DEMAND_FULFILLMENT"),
     bom: UploadFile = File(None),
     res: UploadFile = File(None),
     productionmethod: UploadFile = File(None),
@@ -462,6 +469,7 @@ async def run_simulation(
         schedrcpts_df=optional_dfs.get("schedrcpts"),
         substitutions_df=substitutions_df,
         solver=solver,
+        objective_mode=objective_mode,
     )
 
     if opt_result["status"] == "optimal":

@@ -4,11 +4,16 @@ import pyomo.environ as pyo
 from pyomo.contrib.appsi.solvers.highs import Highs as HiGHS
 from pyomo.contrib.appsi.base import TerminationCondition as AppsiTerminationCondition
 from pyomo.core.expr.numvalue import is_potentially_variable
-from typing import Optional
+from typing import Optional, Literal
 from collections import defaultdict
 from logger_config import get_logger
 
 logger = get_logger("solver.lpopt")
+
+ObjectiveMode = Literal["MAX_DEMAND_FULFILLMENT", "MIN_COST"]
+
+LATE_PENALTY_PER_DAY = 10.0
+EPSILON = 1e-4
 
 
 def run_lp_optimization(
@@ -22,13 +27,19 @@ def run_lp_optimization(
     inventory_df: Optional[pd.DataFrame] = None,
     schedrcpts_df: Optional[pd.DataFrame] = None,
     substitutions_df: Optional[pd.DataFrame] = None,
+    objective_mode: ObjectiveMode = "MIN_COST",
 ) -> dict:
     """
     Full LP optimization using Pyomo + HiGHS solver via APPSI.
     Handles sourcing, production, BOM, resources, inventory, and scheduled receipts.
+
+    Args:
+        objective_mode: "MIN_COST" (standard cost minimization) or
+                        "MAX_DEMAND_FULFILLMENT" (maximize weighted demand fill rate).
     """
     t0 = time.perf_counter()
-    logger.info("LP solver started | sourcing=%d rows, sku=%d rows", len(sourcing_df), len(sku_df))
+    logger.info("LP solver started | sourcing=%d rows, sku=%d rows | objective=%s",
+                len(sourcing_df), len(sku_df), objective_mode)
     model = pyo.ConcreteModel()
 
     sourcing_records = sourcing_df.to_dict(orient="records")
@@ -53,6 +64,7 @@ def run_lp_optimization(
             max_capacity[(item, source, dest)] = cap * (1 - risk_adjustments[adj_key])
 
     demand = {(r["ITEM"], r["LOC"]): r["DEMAND"] for r in sku_records}
+    priority_multiplier = {(r["ITEM"], r["LOC"]): _priority_weight(r.get("PRIORITY", 1)) for r in sku_records}
 
     scheduled_receipts = defaultdict(float)
     initial_inventory = {}
@@ -153,25 +165,64 @@ def run_lp_optimization(
 
     model.shipments = pyo.Var(model.LANES, domain=pyo.NonNegativeReals)
 
-    def total_cost_rule(model):
-        cost = sum(model.shipments[i, s, d] * base_cost[(i, s, d)] for (i, s, d) in model.LANES)
-        if has_production and has_resources:
-            for (item, loc, method), pm in production_methods.items():
-                pvar = model.produce[item, loc, method]
-                for step in production_steps[(item, loc, method)]:
-                    res_cost = resource_cost.get((step["resource"], loc), 0.0)
-                    run_time = step.get("run_time") or 0.0
-                    cost += pvar * run_time * res_cost
-        elif has_production:
-            for (item, loc, method), pm in production_methods.items():
-                var = model.produce[item, loc, method]
-                cost += var * (pm.get("run_time") or 0.0) * 0.1
-        if has_substitutions:
-            for key in model.SUBSTITUTIONS:
-                cost += model.substitute[key] * substitution_penalty[key]
-        return cost
+    if objective_mode == "MAX_DEMAND_FULFILLMENT":
+        model.v_supplied = pyo.Var(model.SKUS, domain=pyo.NonNegativeReals)
+        model.unmet = pyo.Var(model.SKUS, domain=pyo.NonNegativeReals)
 
-    model.total_cost = pyo.Objective(rule=total_cost_rule, sense=pyo.minimize)
+        def total_network_cost_rule(model):
+            cost = sum(model.shipments[i, s, d] * base_cost[(i, s, d)] for (i, s, d) in model.LANES)
+            if has_production and has_resources:
+                for (item, loc, method), pm in production_methods.items():
+                    pvar = model.produce[item, loc, method]
+                    for step in production_steps[(item, loc, method)]:
+                        res_cost = resource_cost.get((step["resource"], loc), 0.0)
+                        run_time = step.get("run_time") or 0.0
+                        cost += pvar * run_time * res_cost
+            elif has_production:
+                for (item, loc, method), pm in production_methods.items():
+                    var = model.produce[item, loc, method]
+                    cost += var * (pm.get("run_time") or 0.0) * 0.1
+            if has_substitutions:
+                for key in model.SUBSTITUTIONS:
+                    cost += model.substitute[key] * substitution_penalty[key]
+            return cost
+
+        model.total_network_cost = pyo.Expression(rule=total_network_cost_rule)
+
+        def demand_fulfillment_rule(model):
+            fulfilled = sum(
+                priority_multiplier.get((item, loc), 1.0) * model.v_supplied[item, loc]
+                for item, loc in model.SKUS
+            )
+            late_penalty_expr = LATE_PENALTY_PER_DAY * sum(
+                model.unmet[item, loc]
+                for item, loc in model.SKUS
+            )
+            cost_expr = EPSILON * model.total_network_cost
+            return fulfilled - late_penalty_expr - cost_expr
+
+        model.obj = pyo.Objective(rule=demand_fulfillment_rule, sense=pyo.maximize)
+
+    else:
+        def total_cost_rule(model):
+            cost = sum(model.shipments[i, s, d] * base_cost[(i, s, d)] for (i, s, d) in model.LANES)
+            if has_production and has_resources:
+                for (item, loc, method), pm in production_methods.items():
+                    pvar = model.produce[item, loc, method]
+                    for step in production_steps[(item, loc, method)]:
+                        res_cost = resource_cost.get((step["resource"], loc), 0.0)
+                        run_time = step.get("run_time") or 0.0
+                        cost += pvar * run_time * res_cost
+            elif has_production:
+                for (item, loc, method), pm in production_methods.items():
+                    var = model.produce[item, loc, method]
+                    cost += var * (pm.get("run_time") or 0.0) * 0.1
+            if has_substitutions:
+                for key in model.SUBSTITUTIONS:
+                    cost += model.substitute[key] * substitution_penalty[key]
+            return cost
+
+        model.obj = pyo.Objective(rule=total_cost_rule, sense=pyo.minimize)
 
     def capacity_rule(model, item, source, dest):
         cap = max_capacity.get((item, source, dest), 0)
@@ -181,45 +232,89 @@ def run_lp_optimization(
 
     model.capacity_constraint = pyo.Constraint(model.LANES, rule=capacity_rule)
 
-    def demand_rule(model, item, dest):
-        supply = sum(model.shipments[i, s, d] for (i, s, d) in model.LANES if i == item and d == dest)
+    if objective_mode == "MAX_DEMAND_FULFILLMENT":
+        def supply_expression(model, item, dest):
+            supply = sum(model.shipments[i, s, d] for (i, s, d) in model.LANES if i == item and d == dest)
+            if has_production:
+                for (i, l, m), var in model.produce.items():
+                    if i == item and l == dest:
+                        yield_factor = production_methods[(i, l, m)]["yield"]
+                        supply += var * yield_factor
+                if has_bom:
+                    for (parent, loc), comps in bom_links.items():
+                        if loc == dest:
+                            for comp, comp_loc, qty_per in comps:
+                                if comp == item:
+                                    for (pi, pl, pm), pvar in model.produce.items():
+                                        if pi == parent and pl == loc:
+                                            supply -= pvar * qty_per
+            if has_substitutions:
+                for primary, substitute, sub_loc in model.SUBSTITUTIONS:
+                    if primary == item and sub_loc == dest:
+                        supply += model.substitute[primary, substitute, sub_loc] * substitution_ratio[(primary, substitute, sub_loc)]
+                for primary, substitute, sub_loc in model.SUBSTITUTIONS:
+                    if substitute == item and sub_loc == dest:
+                        supply -= model.substitute[primary, substitute, sub_loc]
+            return supply
 
-        if has_production:
-            for (i, l, m), var in model.produce.items():
-                if i == item and l == dest:
-                    yield_factor = production_methods[(i, l, m)]["yield"]
-                    supply += var * yield_factor
+        def net_demand_rule(model, item, dest):
+            req = demand.get((item, dest), 0)
+            req -= initial_inventory.get((item, dest), 0)
+            req -= scheduled_receipts.get((item, dest), 0)
+            return max(req, 0)
 
-            if has_bom:
-                for (parent, loc), comps in bom_links.items():
-                    if loc == dest:
-                        for comp, comp_loc, qty_per in comps:
-                            if comp == item:
-                                for (pi, pl, pm), pvar in model.produce.items():
-                                    if pi == parent and pl == loc:
-                                        supply -= pvar * qty_per
+        model.net_demand = pyo.Param(model.SKUS, initialize=net_demand_rule)
 
-        if has_substitutions:
-            for primary, substitute, sub_loc in model.SUBSTITUTIONS:
-                if primary == item and sub_loc == dest:
-                    supply += model.substitute[primary, substitute, sub_loc] * substitution_ratio[(primary, substitute, sub_loc)]
+        def demand_conservation_rule(model, item, dest):
+            return model.v_supplied[item, dest] + model.unmet[item, dest] == model.net_demand[item, dest]
 
-        if has_substitutions:
-            for primary, substitute, sub_loc in model.SUBSTITUTIONS:
-                if substitute == item and sub_loc == dest:
-                    supply -= model.substitute[primary, substitute, sub_loc]
+        model.demand_conservation = pyo.Constraint(model.SKUS, rule=demand_conservation_rule)
 
-        req = demand.get((item, dest), 0)
-        req -= initial_inventory.get((item, dest), 0)
-        req -= scheduled_receipts.get((item, dest), 0)
-        req = max(req, 0)
+        def supply_limit_rule(model, item, dest):
+            return model.v_supplied[item, dest] <= supply_expression(model, item, dest)
 
-        if not is_potentially_variable(supply):
-            return pyo.Constraint.Feasible if supply >= req else pyo.Constraint.Infeasible
+        model.supply_limit = pyo.Constraint(model.SKUS, rule=supply_limit_rule)
 
-        return supply >= req
+    else:
+        def demand_rule(model, item, dest):
+            supply = sum(model.shipments[i, s, d] for (i, s, d) in model.LANES if i == item and d == dest)
 
-    model.demand_constraint = pyo.Constraint(model.SKUS, rule=demand_rule)
+            if has_production:
+                for (i, l, m), var in model.produce.items():
+                    if i == item and l == dest:
+                        yield_factor = production_methods[(i, l, m)]["yield"]
+                        supply += var * yield_factor
+
+                if has_bom:
+                    for (parent, loc), comps in bom_links.items():
+                        if loc == dest:
+                            for comp, comp_loc, qty_per in comps:
+                                if comp == item:
+                                    for (pi, pl, pm), pvar in model.produce.items():
+                                        if pi == parent and pl == loc:
+                                            supply -= pvar * qty_per
+
+            if has_substitutions:
+                for primary, substitute, sub_loc in model.SUBSTITUTIONS:
+                    if primary == item and sub_loc == dest:
+                        supply += model.substitute[primary, substitute, sub_loc] * substitution_ratio[(primary, substitute, sub_loc)]
+
+            if has_substitutions:
+                for primary, substitute, sub_loc in model.SUBSTITUTIONS:
+                    if substitute == item and sub_loc == dest:
+                        supply -= model.substitute[primary, substitute, sub_loc]
+
+            req = demand.get((item, dest), 0)
+            req -= initial_inventory.get((item, dest), 0)
+            req -= scheduled_receipts.get((item, dest), 0)
+            req = max(req, 0)
+
+            if not is_potentially_variable(supply):
+                return pyo.Constraint.Feasible if supply >= req else pyo.Constraint.Infeasible
+
+            return supply >= req
+
+        model.demand_constraint = pyo.Constraint(model.SKUS, rule=demand_rule)
 
     if has_substitutions:
         def substitution_availability_rule(model, primary, substitute, loc):
@@ -296,9 +391,26 @@ def run_lp_optimization(
         model.inventory_balance = pyo.Constraint(model.SKUS, rule=inventory_balance_rule)
 
     solver = HiGHS()
-    logger.info("HiGHS solver invoked | lanes=%d | skus=%d | production=%s | resources=%s",
-                len(lanes), len(active_skus), has_production, has_resources)
-    results = solver.solve(model)
+    logger.info("HiGHS solver invoked | lanes=%d | skus=%d | production=%s | resources=%s | objective=%s",
+                len(lanes), len(active_skus), has_production, has_resources, objective_mode)
+    try:
+        results = solver.solve(model)
+    except RuntimeError as e:
+        elapsed_ms = (time.perf_counter() - t0) * 1000
+        err_msg = str(e)
+        if "feasible solution was not found" in err_msg:
+            logger.warning("LP infeasible (RuntimeError) | elapsed=%.0fms", elapsed_ms)
+            return {
+                "status": "infeasible",
+                "error": "Model is infeasible - demand cannot be met with available capacity",
+                "method": "lp_highs",
+            }
+        logger.error("LP RuntimeError: %s | elapsed=%.0fms", err_msg, elapsed_ms)
+        return {
+            "status": "error",
+            "error": f"LP solver error: {err_msg}",
+            "method": "lp_highs",
+        }
     tc_name = getattr(results.termination_condition, "name", str(results.termination_condition))
     logger.info("HiGHS terminated with: %s", tc_name)
 
@@ -328,15 +440,67 @@ def run_lp_optimization(
                         "QUANTITY": round(qty, 2),
                     })
 
-        total_cost_val = pyo.value(model.total_cost)
+        total_cost_val = pyo.value(model.obj)
+        if objective_mode == "MAX_DEMAND_FULFILLMENT":
+            total_cost_val = pyo.value(model.total_network_cost)
 
         total_demand_qty = sum(demand.values())
-        met_qty = sum(s["QUANTITY"] for s in shipments_result)
-        unmet_qty = max(total_demand_qty - met_qty, 0.0)
+        total_produced_qty = sum(r["QUANTITY"] for r in production_result)
+
+        if objective_mode == "MAX_DEMAND_FULFILLMENT":
+            met_qty = sum(pyo.value(model.v_supplied[item, loc]) for item, loc in model.SKUS)
+            unmet_qty = sum(pyo.value(model.unmet[item, loc]) for item, loc in model.SKUS)
+        else:
+            total_shipment_qty = sum(s["QUANTITY"] for s in shipments_result)
+            met_qty = total_shipment_qty + total_produced_qty
+            unmet_qty = max(total_demand_qty - met_qty, 0.0)
+
         met_pct = (met_qty / total_demand_qty * 100) if total_demand_qty > 0 else 0.0
         unmet_pct = (unmet_qty / total_demand_qty * 100) if total_demand_qty > 0 else 0.0
 
+        total_supplied_qty = met_qty
+        fill_rate_pct = (total_supplied_qty / total_demand_qty * 100) if total_demand_qty > 0 else 0.0
+
+        resource_utilization = []
+        if has_resources and has_production:
+            for (resource, loc) in model.RESOURCES:
+                total_usage = 0
+                for (item, loc_m, method), steps in production_steps.items():
+                    if loc_m != loc:
+                        continue
+                    for step in steps:
+                        if step["resource"] == resource:
+                            pvar = model.produce[item, loc_m, method]
+                            time_per_unit = step.get("run_time") or 0.0
+                            total_usage += pyo.value(pvar) * time_per_unit
+                cap = resource_capacity.get((resource, loc), 0)
+                util_pct = (total_usage / cap * 100) if cap > 0 else 0
+                if total_usage > 1e-6:
+                    resource_utilization.append({
+                        "RESOURCE": resource,
+                        "LOC": loc,
+                        "CAPACITY": round(cap, 2),
+                        "USED": round(total_usage, 2),
+                        "UTILIZATION_PCT": round(util_pct, 2),
+                    })
+
+        lane_utilization = []
+        for (item, source, dest) in model.LANES:
+            qty = pyo.value(model.shipments[item, source, dest])
+            cap = max_capacity.get((item, source, dest), 0)
+            util_pct = (qty / cap * 100) if cap > 0 else 0
+            if qty > 1e-6:
+                lane_utilization.append({
+                    "ITEM": item,
+                    "SOURCE": source,
+                    "DEST": dest,
+                    "QUANTITY": round(qty, 2),
+                    "CAPACITY": round(cap, 2),
+                    "UTILIZATION_PCT": round(util_pct, 2),
+                })
+
         summary = {
+            "objective_mode": objective_mode,
             "total_demand_qty": round(total_demand_qty, 6),
             "met_qty": round(met_qty, 6),
             "met_pct": round(met_pct, 6),
@@ -345,18 +509,24 @@ def run_lp_optimization(
             "avg_delay_days": 0.0,
             "unmet_qty": round(unmet_qty, 6),
             "unmet_pct": round(unmet_pct, 6),
+            "total_supplied_qty": round(total_supplied_qty, 6),
+            "fill_rate_pct": round(fill_rate_pct, 6),
+            "total_landed_cost": round(total_cost_val, 6),
             "total_cost": round(total_cost_val, 6),
+            "bottlenecked_resources": resource_utilization,
+            "lane_utilization": lane_utilization,
             "solve_time_seconds": round(getattr(results, "solve_time", 0), 6) if hasattr(results, "solve_time") else 0.0,
         }
 
         elapsed_ms = (time.perf_counter() - t0) * 1000
         logger.info(
-            "LP done (optimal) | cost=%.2f | met=%.1f%% | shipments=%d | production=%d | elapsed=%.0fms",
-            total_cost_val, met_pct, len(shipments_result), len(production_result), elapsed_ms,
+            "LP done (optimal) | objective=%s | cost=%.2f | fill_rate=%.1f%% | shipments=%d | production=%d | elapsed=%.0fms",
+            objective_mode, total_cost_val, fill_rate_pct, len(shipments_result), len(production_result), elapsed_ms,
         )
 
         return {
             "status": "optimal",
+            "objective_mode": objective_mode,
             "shipments": shipments_result,
             "production": production_result,
             "substitutions": [
@@ -392,3 +562,7 @@ def run_lp_optimization(
             "error": f"Solver terminated with condition: {tc_name}",
             "method": "lp_highs",
         }
+
+
+def _priority_weight(priority: int) -> float:
+    return 1.0 / max(priority, 1)
